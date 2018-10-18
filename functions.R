@@ -6,9 +6,10 @@ search <- function(page, from, to) {
                   '{"fld":"dataTime.end","cdr":"AND","hlt":"false","vlr":"AND","qtp":"DEF","val":"', to, '"},',
                   '{"fld":"contentText","cdr":"AND","hlt":"true","vlr":"AND","qtp":"DEF","val":"', keyword,'"}],"obs":[{"fld":"dataTime","drt":"DESC"}]}')
   
-  url <- paste0('http://data.people.com.cn/rmrb/s?type=1&qs=', url_encode(query), "&pageNo=3", page)
-  read_html(url)
-  #html_nodes(index, xpath="//div[@class='sreach_div']//h3//a/@href")
+  url <- paste0('http://data.people.com.cn/rmrb/s?type=1&qs=', url_encode(query), "&pageNo=", page)
+  index <- read_html(url)
+  paste0("http://data.people.com.cn", 
+         html_text(html_nodes(index, xpath="//div[@class='sreach_div']//h3//a/@href")))
 }
 
 fetch <- function(webpage) {
