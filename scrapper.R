@@ -21,18 +21,24 @@ temp <- data.frame(url = url, text = "", stringsAsFactors = FALSE)
 #     cat(i, stri_sub(temp$text[i], 1, 100), "\n")
 #     Sys.sleep(5)
 # }
-
-i <- 1
-while(TRUE) {
+try_max <- 2
+i <- 7
+try <- 1
+while (TRUE) {
     txt <- character()
-    para <- read_html(temp$url[i]) %>% 
-        html_nodes("p") %>% 
-        html_text() 
-    txt <- paste0(para, collapse = " ")
+    elem <- read_html(temp$url[i]) %>% html_nodes("p")
+    if (length(elem) == 0)
+        elem <- read_html(temp$url[i]) %>% html_nodes("td")
+
+    try <- try + 1
+    txt <- paste0(html_text(elem), collapse = " ")
     cat(i, stri_sub(txt, 1, 100), "\n")
-    if (txt != "")
+    
+    if (txt != "" || try > try_max) {
         i <- i + 1
-    Sys.sleep(5)
+        try <- 1
+    }
+    Sys.sleep(10)
     if (length(temp$url) < i)
         break
 }
